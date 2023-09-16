@@ -1,11 +1,19 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LockScreen from '../screens/LockScreen';
-const Start = (props) => {
+const Start = () => {
+    const navigation = useNavigation();
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            navigation.navigate("LockScreen");
+        }, 2000);
+
+        return () => clearTimeout(timer); // Clear the timer if the component unmounts.
+    }, [])
     const [loaded] = useFonts({
         Pattaya: require('../assets/fonts/Pattaya/Pattaya-Regular.ttf'),
         Kalam:require('../assets/fonts/Kalam/Kalam/Kalam-Bold.ttf')
@@ -20,9 +28,6 @@ const Start = (props) => {
                 style={{ height: 350, width: 350, resizeMode: 'contain', marginBottom: 50, marginTop: 70 }}
             />
             <Text style={styles.heading}>It's easy talking to your friends with{'\n'}<Text style={styles.title}>ChatMate</Text> </Text>
-            <TouchableOpacity style={styles.Button} onPress={()=>props.navigation.navigate("LockScreen")}>
-                <Text style={{color:'#000',fontFamily:'Pattaya',fontSize:15}}>Start</Text>
-            </TouchableOpacity>
         </View>
     )
 }
