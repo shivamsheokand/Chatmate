@@ -134,7 +134,7 @@ app.get("/friend-request/:userid", async (req, res) => {
     try {
         const { userid } = req.params;
         // fetch the user documents based on the userid
-        const user = await User.findById(userid).populate('friendRequesta', 'name email').lean();
+        const user = await User.findById(userid).populate('friendRequests','name email').lean();
         const friendRequest = user.friendRequests;
 
         response.json(friendRequest);

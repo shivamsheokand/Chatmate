@@ -24,7 +24,7 @@ const FriendsScreen = () => {
             console.log("error fetch friend request", err);
         }
     }
-    console.log(friendRequests);
+    console.log("gh",friendRequests);
     return (
         <View style={{ padding: 10, marginHorizontal: 12 }}>
             {friendRequests.length > 0 && <Text>Your Friend Requests!</Text>}
