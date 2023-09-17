@@ -20,7 +20,7 @@ const Signup = () => {
 
         // send  a Post Request to the Backend API to register the user
 
-        axios.post('http://192.168.1.6:8000/register', user).then((response) => {
+        axios.post('http://192.168.1.4:8000/register', user).then((response) => {
             console.log(response);
             Alert.alert(
                 "registered successfully",

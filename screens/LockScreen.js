@@ -9,28 +9,28 @@ const LockScreen = () => {
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
 
-    useEffect(() => {
-        const checkLoginStatus = async () => {
-            try {
-                const token = await AsyncStorage.getItem("authToken");
-                if (token) {
-                    navigation.replace("Home");
-                } else {
-                    // Token not found; show the login screen itself
-                }
-            } catch (err) {
-                console.log("Error", err);
-            }
-        };
-        checkLoginStatus();
-    }, []);
+    // useEffect(() => {
+    //     const checkLoginStatus = async () => {
+    //         try {
+    //             const token = await AsyncStorage.getItem("authToken");
+    //             if (token) {
+    //                 navigation.replace("Home");
+    //             } else {
+    //                 // Token not found; show the login screen itself
+    //             }
+    //         } catch (err) {
+    //             console.log("Error", err);
+    //         }
+    //     };
+    //     checkLoginStatus();
+    // }, []);
 
     const handleLogin = () => {
         const user = {
             email: email,
             password: password
         };
-        axios.post('http://192.168.1.6:8000/login', user)
+        axios.post('http://192.168.1.4:8000/login', user)
             .then((response) => {
                 console.log(response);
                 const token = response.data.token;
@@ -73,7 +73,7 @@ const LockScreen = () => {
                             <Text style={{ color: '#fff', fontWeight: '700', textAlign: 'center' }}>Submit</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+                    <TouchableOpacity onPress={() => navigation.navigate("Singup")}>
                         <Text style={{ marginTop: 20, textAlign: 'center' }}>Don't have an account? Sign Up</Text>
                     </TouchableOpacity>
                     <Text style={{ marginTop: 20, textAlign: 'center', fontSize: 17 }}>Designed By : <Text style={{ color: 'orange', textDecorationLine: 'underline', fontWeight: 'bold' }}>Sam</Text></Text>

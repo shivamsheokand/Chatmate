@@ -95,3 +95,52 @@ app.post('/login', (req, res) => {
         res.status(500).json({ message: "Internal Server Error" })
     })
 });
+
+//end Points to access all the users axpact the user who is currently logged in
+app.get('/users/:userid', (req, res) => {
+    const loggedInUserid = req.params.userid;
+
+    User.find({ _id: { $ne: loggedInUserid } }).then((user) => {
+        res.status(200).json(user);
+    }).catch((Err) => {
+        console.log("error in finding User", Err);
+        res.status(500).json({ message: "Error retrving Users" })
+    })
+})
+
+// endPoints to send a frnd request to the user
+app.post("/friend-request", async (req, res) => {
+    const { currentUserid, selectedUserid } = req.body;
+    try {
+        //update the recepient's friendrequest Array
+        await User.findByIdAndUpdate(selectedUserid, {
+            $push: { friendRequests: currentUserid }
+        })
+
+        // update the sender's friendrequest array
+        await User.findByIdAndUpdate(currentUserid, {
+            $push: { sendFriendRequest: selectedUserid }
+        })
+
+        response.sendStatus(200);
+    } catch (err) {
+        res.sendStatus(500);
+    }
+})
+
+//endPoints to show all the friend requests of the Particular user
+
+app.get("/friend-request/:userid", async (req, res) => {
+    try {
+        const { userid } = req.params;
+        // fetch the user documents based on the userid
+        const user = await User.findById(userid).populate('friendRequesta', 'name email').lean();
+        const friendRequest = user.friendRequests;
+
+        response.json(friendRequest);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
+

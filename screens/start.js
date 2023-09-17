@@ -10,7 +10,7 @@ const Start = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             navigation.navigate("LockScreen");
-        }, 2000);
+        }, 7000);
 
         return () => clearTimeout(timer); // Clear the timer if the component unmounts.
     }, [])
@@ -28,6 +28,9 @@ const Start = () => {
                 style={{ height: 350, width: 350, resizeMode: 'contain', marginBottom: 50, marginTop: 70 }}
             />
             <Text style={styles.heading}>It's easy talking to your friends with{'\n'}<Text style={styles.title}>ChatMate</Text> </Text>
+            <TouchableOpacity style={styles.Button} onPress={()=>navigation.navigate("LockScreen")}>
+                <Text style={{color:'#000',fontFamily:'Pattaya',fontSize:15}}>Start</Text>
+            </TouchableOpacity>
         </View>
     )
 }
