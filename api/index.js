@@ -130,17 +130,69 @@ app.post("/friend-request", async (req, res) => {
 
 //endPoints to show all the friend requests of the Particular user
 
+// app.get("/friend-request/:userid", async (req, res) => {
+//     try {
+//         const { userid } = req.params;
+//         // fetch the user documents based on the userid
+//         const user = await User.findById(userid).populate('friendRequests','name email').lean();
+//         const friendRequest = user.friendRequests;
+
+//         response.json(friendRequest);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// })
+
+
+
+
+// Endpoint to show all the friend requests of the particular user
+// app.get("/friend-request/:userid", async (req, res) => {
+//     try {
+//         const { userid } = req.params;
+//         // Fetch the user documents based on the userid
+//         const user = await User.findById(userid).populate('friendRequests', 'name email').lean();
+//         const friendRequest = user.friendRequests;
+
+//         res.json(friendRequest);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// });
+
+
+
+// Endpoints to show all the friend requests of the particular user
+// app.get("/friend-request/:userid", async (req, res) => {
+//     try {
+//         const { userid } = req.params;
+//         // Fetch the user documents based on the userid
+//         const user = await User.findById(userid).populate('friendRequests', 'name email').lean();
+//         const friendRequest = user.friendRequests;
+
+//         res.json(friendRequest); // Use res instead of response
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// });
+
+
+
 app.get("/friend-request/:userid", async (req, res) => {
     try {
         const { userid } = req.params;
-        // fetch the user documents based on the userid
-        const user = await User.findById(userid).populate('friendRequests','name email').lean();
+        console.log("Userid:", userid); // Log the user ID for debugging
+        // Fetch the user documents based on the userid
+        const user = await User.findById(userid).populate('friendRequests', 'name email').lean();
+        console.log("User Data:", user); // Log the user data for debugging
         const friendRequest = user.friendRequests;
 
-        response.json(friendRequest);
+        res.json(friendRequest);
     } catch (error) {
-        console.log(error);
+        console.error("Error:", error); // Log any errors for debugging
         res.status(500).json({ message: "Internal Server Error" });
     }
-})
-
+});

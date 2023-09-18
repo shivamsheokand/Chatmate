@@ -27,13 +27,13 @@ const userSchema = new mongoose.Schema({
             ref: "User"
         }
     ],
-    friends:[
+    friends: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         }
     ],
-    sendFriendRequest:[
+    sendFriendRequest: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
