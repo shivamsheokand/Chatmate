@@ -9,6 +9,7 @@ import LockScreen from '../screens/LockScreen';
 import Singup from '../screens/Singup';
 import Home from '../screens/Home';
 import FriendsScreen from '../screens/FriendsScreen';
+import ChatScreen from '../screens/ChatScreen';
 const Stack = createNativeStackNavigator();
 const StactNavi = () => {
     const [loaded] = useFonts({
@@ -75,6 +76,20 @@ const StactNavi = () => {
                 }} />
                 <Stack.Screen name="Friends" component={FriendsScreen} options={{
                     title: 'Friends',
+                    headerStyle: {
+                        // backgroundColor: "#0e0703"
+                        backgroundColor: "#fff"
+                    },
+                    // headerShown: false,
+                    headerTintColor: 'orange',
+                    headerTitleStyle: {
+                        color: 'orange',
+                        fontFamily: 'Pattaya',
+                        fontSize: 15
+                    },
+                }} />
+                <Stack.Screen name="Chats" component={ChatScreen} options={{
+                    title: 'Chats',
                     headerStyle: {
                         // backgroundColor: "#0e0703"
                         backgroundColor: "#fff"

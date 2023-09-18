@@ -119,7 +119,7 @@ app.post("/friend-request", async (req, res) => {
 
         // update the sender's friendrequest array
         await User.findByIdAndUpdate(currentUserid, {
-            $push: { sendFriendRequest: selectedUserid }
+            $push: { sentFriendRequest: selectedUserid }
         })
 
         response.sendStatus(200);
@@ -137,11 +137,43 @@ app.get("/friend-request/:userid", async (req, res) => {
         // Fetch the user documents based on the userid
         const user = await User.findById(userid).populate('friendRequests', 'name email').lean();
         console.log("User Data:", user); // Log the user data for debugging
-        const friendRequest = user.friendRequests;
+        const friendRequests = user.friendRequests;
 
-        res.json(friendRequest);
+        res.json(friendRequests);
     } catch (error) {
         console.error("Error:", error); // Log any errors for debugging
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+
+// end Points to accept a frnd request
+
+app.post("/friend-request/accept", async (req, res) => {
+    try {
+        const { senderId, recepientId } = req.body;
+
+        //retrieve the documents of sender and the recipient
+        const sender = await User.findById(senderId);
+        const recepient = await User.findById(recepientId);
+
+        sender.friends.push(recepientId);
+        recepient.friends.push(senderId);
+
+        recepient.friendRequests = recepient.friendRequests.filter(
+            (request) => request.toString() !== senderId.toString()
+        );
+
+        sender.sentFriendRequest = sender.sentFriendRequest.filter(
+            (request) => request.toString() !== recepientId.toString
+        );
+
+        await sender.save();
+        await recepient.save();
+
+        res.status(200).json({ message: "Friend Request accepted successfully" });
+    } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
