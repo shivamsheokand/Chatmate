@@ -2,11 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useContext, useState } from "react";
 import axios from "axios";
 import { UserType } from "../UserContext";
-// import FriendRequest from "../components/FriendRequest";
 
 const FriendsScreen = () => {
     const { userid } = useContext(UserType);
-    const [friendRequests, setFriendRequests] = useState([]);
+    const [friendRequest, setFriendRequest] = useState([]);
     useEffect(() => {
         fetchFriendRequest();
     }, []);
@@ -23,26 +22,17 @@ const FriendsScreen = () => {
                     email: friendRequest.email,
                 }));
 
-                setFriendRequests(friendRequestsData);
+                setFriendRequest(friendRequestsData);
             }
         } catch (err) {
             console.log("error message", err);
         }
     };
 
-    console.log(friendRequests);
+    console.log(friendRequest);
     return (
         <View style={{ padding: 10, marginHorizontal: 12 }}>
-            {friendRequests.length > 0 && <Text>Your Friend Requests!</Text>}
-
-            {/* {friendRequests.map((item, index) => (
-                <FriendRequest
-                    key={index}
-                    item={item}
-                    friendRequests={friendRequests}
-                    setFriendRequests={setFriendRequests}
-                />
-            ))} */}
+            {friendRequest.length > 0 && <Text>Your Friend Requests!</Text>}
         </View>
     );
 };
