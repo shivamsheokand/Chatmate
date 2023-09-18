@@ -10,12 +10,14 @@ const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmpassword] = useState('');
+    const [image, setImage] = useState("");
     const hendleRegister = () => {
         const user = {
             name: name,
             email: email,
             password: password,
             confirmpassword: confirmpassword,
+            image: image,
         }
 
         // send  a Post Request to the Backend API to register the user
@@ -30,6 +32,7 @@ const Signup = () => {
             setEmail("");
             setPassword("");
             setConfirmpassword("");
+            setImage("");
         }).catch((err) => {
             Alert.alert(
                 "Registration Error",
@@ -57,6 +60,8 @@ const Signup = () => {
                     <TextInput placeholder='Enter Your password' style={styles.inputtext} value={password} onChangeText={txt => setPassword(txt)} />
                     <Text style={{ fontSize: 12, fontWeight: '500', color: 'orange' }}>Confirm Password</Text>
                     <TextInput placeholder='Confirm Your password' style={styles.inputtext} value={confirmpassword} onChangeText={txt => setConfirmpassword(txt)} />
+                    <Text style={{ fontSize: 12, fontWeight: '500', color: 'orange' }}>IMAGE</Text>
+                    <TextInput placeholder='Enter Your Image Url' style={styles.inputtext} value={image} onChangeText={(text) => setImage(text)} />
                     <TouchableOpacity onPress={hendleRegister} >
                         <View style={styles.submitButton}>
                             <Text style={{ color: '#fff', fontWeight: '700', textAlign: 'center' }}>Sing Up</Text>

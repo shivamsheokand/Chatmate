@@ -23,7 +23,7 @@ const Home = () => {
             ),
             headerRight: () => (
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                    <Ionicons name="ios-chatbubbles-outline" size={24} color="black" />
+                    <Ionicons onPress={()=>navigation.navigate("Chats")} name="ios-chatbubbles-outline" size={24} color="black" />
                     <Octicons onPress={()=> navigation.navigate("Friends")} name="people" size={24} color="black" />
                 </View>
             )

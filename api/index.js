@@ -50,11 +50,11 @@ const createToken = (userid) => {
 //end point for registration of the user
 
 app.post('/register', (req, res) => {
-    const { name, email, password, confirmpassword } = req.body;
+    const { name, email, password, confirmpassword, image } = req.body;
 
     // create new user
 
-    const newUser = new User({ name, email, password, confirmpassword })
+    const newUser = new User({ name, email, password, confirmpassword, image });
 
     // save the user the Database
     newUser.save().then(() => {
@@ -135,7 +135,7 @@ app.get("/friend-request/:userid", async (req, res) => {
         const { userid } = req.params;
         console.log("Userid:", userid); // Log the user ID for debugging
         // Fetch the user documents based on the userid
-        const user = await User.findById(userid).populate('friendRequests', 'name email').lean();
+        const user = await User.findById(userid).populate('friendRequests', 'name email image').lean();
         console.log("User Data:", user); // Log the user data for debugging
         const friendRequests = user.friendRequests;
 
@@ -177,3 +177,95 @@ app.post("/friend-request/accept", async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+
+// endpoint to access all friends of the loged in user
+
+app.get('/accepted-friends/:userid', async (req, res) => {
+    try {
+        const { userid } = req.params;
+        const user = await User.findById(userid).populate(
+            "friends",
+            "name email"
+        )
+
+        const acceptedFriends = user.friends;
+        res.json(acceptedFriends)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" })
+    }
+})
+
+//upload image 
+const multer = require("multer");
+
+// Configure multer for handling file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "files/"); // Specify the desired destination folder
+    },
+    filename: function (req, file, cb) {
+        // Generate a unique filename for the uploaded file
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, uniqueSuffix + "-" + file.originalname);
+    },
+});
+
+const upload = multer({ storage: storage });
+// endpoint to post massege and store the Backend
+
+app.post('/messages', upload.single("imageFile"), async (req, res) => {
+    try {
+        const { senderId, recepientId, messageType, messageText } = req.body;
+
+        const newMessage = new Message({
+            senderId,
+            recepientId,
+            messageType,
+            messageText,
+            timeStamp: new Date(),
+            imageUrl: messageType === "image" ? req.file.path : null,
+            // imageUrl: messageType === 'image'
+        })
+
+        res.status(200).json({ message: "message sent Succesfuly" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" })
+    }
+})
+
+//end  point to get the user details to desigen the chat room header
+
+app.get("/user/:userid", async (req, res) => {
+    try {
+        const { userid } = req.params;
+
+        //fetch the user details from the user id
+        const recepientId = await User.findById(userid);
+
+        res.json(recepientId)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" })
+    }
+})
+
+//end points fetch the message between two users in the chat room
+app.get('/messages/:senderId/:recepientId', async (req, res) => {
+    try {
+        const { senderId, receientId } = req.params;
+        const message = await Message.findOne({
+            $or: [
+                { senderId: senderId, recepientId: receientId },
+                { senderId: receientId, recepientId: senderId }
+            ]
+        }).populate("senderId", "_id name");
+
+        res.json(message)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" })
+    }
+})

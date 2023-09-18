@@ -10,6 +10,7 @@ import Singup from '../screens/Singup';
 import Home from '../screens/Home';
 import FriendsScreen from '../screens/FriendsScreen';
 import ChatScreen from '../screens/ChatScreen';
+import ChatMassegeScreen from '../screens/ChatMassegeScreen';
 const Stack = createNativeStackNavigator();
 const StactNavi = () => {
     const [loaded] = useFonts({
@@ -102,6 +103,7 @@ const StactNavi = () => {
                         fontSize: 15
                     },
                 }} />
+                <Stack.Screen name="Messages" component={ChatMassegeScreen}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

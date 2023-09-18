@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { Octicons } from '@expo/vector-icons';
 import { UserType } from '../UserContext';
@@ -27,9 +27,20 @@ const User = ({ item }) => {
     }
     return (
         <Pressable style={{ flexDirection: 'row', alignItems: 'center', marginVertical: '10' }}>
-            <View style={{ marginLeft: 5 }}>
-                <Octicons name="people" size={30} color="black" />
+            <View>
+                <Image
+                    style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                        resizeMode: "cover",
+                    }}
+                    source={{ uri: item.image }}
+                />
             </View>
+            {/* <View style={{ marginLeft: 5 }}>
+                <Octicons name="people" size={30} color="black" />
+            </View> */}
             <View style={{ marginLeft: 10, flex: 1 }}>
                 <Text style={{ fontWeight: "bold" }}>{item?.name}</Text>
                 <Text style={{ marginTop: 4, color: 'gray' }}>{item?.email}</Text>

@@ -17,10 +17,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // image:{
-    //     type: string,
-    //     required: true
-    // },
+    image:{
+        type: String,
+        required: true
+    },
     friendRequests:[
         {
             type: mongoose.Schema.Types.ObjectId,
