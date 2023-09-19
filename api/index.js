@@ -223,12 +223,12 @@ app.post('/messages', upload.single("imageFile"), async (req, res) => {
             senderId,
             recepientId,
             messageType,
-            messageText,
+            message:messageText,
             timeStamp: new Date(),
             imageUrl: messageType === "image" ? req.file.path : null,
             // imageUrl: messageType === 'image'
         })
-
+        await newMessage.save();
         res.status(200).json({ message: "message sent Succesfuly" })
     } catch (error) {
         console.log(error);

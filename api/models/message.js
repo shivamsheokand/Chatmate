@@ -11,10 +11,10 @@ const messageSchema = new mongoose.Schema({
     },
     messageType: {
         type: String,
-        enum: ["text"],
+        enum: ["text", "image"],
     },
     message: String,
-    // imageUrl: String,
+    imageUrl: String,
     timeStamp: {
         type: Date,
         default: Date.now,
