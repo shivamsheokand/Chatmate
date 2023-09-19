@@ -253,19 +253,20 @@ app.get("/user/:userid", async (req, res) => {
 })
 
 //end points fetch the message between two users in the chat room
+
 app.get('/messages/:senderId/:recepientId', async (req, res) => {
     try {
-        const { senderId, receientId } = req.params;
-        const message = await Message.findOne({
+        const { senderId, recepientId } = req.params;
+        const messages = await Message.find({
             $or: [
-                { senderId: senderId, recepientId: receientId },
-                { senderId: receientId, recepientId: senderId }
+                { senderId: senderId, recepientId: recepientId },
+                { senderId: recepientId, recepientId: senderId }
             ]
         }).populate("senderId", "_id name");
 
-        res.json(message)
+        res.json(messages);
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: "Internal server error" })
+        res.status(500).json({ message: "Internal server error" });
     }
-})
+});

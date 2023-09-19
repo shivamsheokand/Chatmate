@@ -20,18 +20,35 @@ const ChatMassegeScreen = () => {
         setShowEmojiSelector(!showEmojiSelector);
     }
 
-    useEffect(() => {
-        const fetchRecepientData = async () => {
-            try {
-                const response = await fetch(`http://192.168.1.3:8000/user/${recepientId}`);
-                const data = response.json();
-                setRecepientData(data);
-            } catch (err) {
-                console.log("error retrieving Details", err);
-            };
+    
+    // ...
+
+useLayoutEffect(() => {
+    navigation.setOptions({
+        headerTitle: "",
+        headerLeft: () => (
+            <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+                <MaterialCommunityIcons onPress={()=>navigation.goBack()} name="backburger" size={24} color="black" />
+            </View>
+        ),
+    });
+}, []);
+
+// ...
+
+useEffect(() => {
+    const fetchRecepientData = async () => {
+        try {
+            const response = await fetch(`http://192.168.1.3:8000/user/${recepientId}`);
+            const data = await response.json(); // Wait for JSON parsing
+            setRecepientData(data);
+        } catch (err) {
+            console.log("error retrieving Details", err);
         }
-        fetchRecepientData();
-    }, [])
+    }
+    fetchRecepientData();
+}, []);
+
     const hendSend = async (messageType, imageUri) => {
         try {
             const formData = new FormData();
@@ -66,19 +83,9 @@ const ChatMassegeScreen = () => {
         }
     }
     console.log(recepientData);
-    console.warn(recepientData);
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerTitle: "",
-            headerLeft: () => {
-                <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-                    <MaterialCommunityIcons name="backburger" size={24} color="black" />
-                </View>
-            }
-            
-        });
-        
-    }, [])
+    // console.warn(recepientData);
+
+
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
             <ScrollView>
