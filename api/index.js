@@ -223,7 +223,7 @@ app.post('/messages', upload.single("imageFile"), async (req, res) => {
             senderId,
             recepientId,
             messageType,
-            message:messageText,
+            message: messageText,
             timeStamp: new Date(),
             imageUrl: messageType === "image" ? req.file.path : null,
             // imageUrl: messageType === 'image'
@@ -287,3 +287,39 @@ app.post('/deleteMessages', async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
+
+// endpoint  for friend requests sent to particular users
+
+app.get("/friend-request/sent/:userid", async (req, res) => {
+    try {
+        const { userid } = req.params;
+        const user = await User.findById(userid).populate("sentFriendRequest", "name email image").lean();
+
+        const sentFriendRequest = user.sentFriendRequest;
+
+        res.json(sentFriendRequest);
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).json({ error: "Internal Server" });
+    }
+})
+
+app.get("/friends/:userid", (req, res) => {
+    try {
+        const { userid } = req.params;
+
+        User.findById(userid).populate("friends").then((user) => {
+            if (!user) {
+                return res.status(404).json({ message: "User not found" })
+            }
+
+            const friendids = user.friends.map((friend) => friend._id);
+
+            res.status(200).json(friendids);
+        })
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).json({ message: "internal server error" })
+    }
+})

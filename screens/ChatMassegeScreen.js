@@ -1,5 +1,5 @@
-import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView, TextInput, TouchableOpacity, Image, Pressable } from 'react-native'
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
+import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView, TextInput, TouchableOpacity, Image, Pressable} from 'react-native'
+import React, { useContext, useEffect, useLayoutEffect, useState,useRef  } from 'react'
 import { Entypo } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,7 +12,7 @@ import * as ImagePicker from 'expo-image-picker';
 const ChatMassegeScreen = () => {
     const [showEmojiSelector, setShowEmojiSelector] = useState(false);
     const [message, setMessage] = useState('');
-    const [meggages, setMeggages] = useState([]);
+    const [messages, setMessages] = useState([]);
     const [selectedMessages, setSelectedMessages] = useState([]);
     const [selectedImage, setSelectedImage] = useState("");
     const { userid } = useContext(UserType);
@@ -20,9 +20,28 @@ const ChatMassegeScreen = () => {
     const route = useRoute();
     const [recepientData, setRecepientData] = useState();
     const { recepientId } = route.params;
+
+    const scrollViewRef= useRef(null);
+
+    useEffect(()=>{
+        scrollToBottom()
+    },[]);
+
+    const scrollToBottom= ()=>{
+        if(scrollViewRef.current){
+            scrollViewRef.current.scrollToEnd({animated:false});
+        }
+    }
+
+    const handleContentSizeChange=()=>{
+        scrollToBottom();
+    }
+
     const hendleEmojiPress = () => {
         setShowEmojiSelector(!showEmojiSelector);
     }
+
+
 
     const fetchMessages = async () => {
         try {
@@ -31,7 +50,7 @@ const ChatMassegeScreen = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setMeggages(data);
+                setMessages(data);
             } else {
                 console.log("error Showing message", response.status.message);
             }
@@ -43,7 +62,7 @@ const ChatMassegeScreen = () => {
     useEffect(() => {
         fetchMessages()
     }, [])
-    console.log("Messages", selectedMessages);
+    // console.log("Messages", selectedMessages);
 
     // ...
 
@@ -165,7 +184,7 @@ const ChatMassegeScreen = () => {
             aspect: [4, 3],
             quality: 1,
         });
-        console.log(result);
+        // console.log(result);
         if (!result.canceled) {
             hendSend("image", result.uri);
         }
@@ -186,8 +205,8 @@ const ChatMassegeScreen = () => {
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
-            <ScrollView>
-                {meggages.map((item, index) => {
+            <ScrollView ref={scrollViewRef} contentContainerStyle={{flexGrow:1}} onContentSizeChange={handleContentSizeChange}>
+                {messages.map((item, index) => {
 
                     if (item.messageType === "text") {
                         const isSelected = selectedMessages.includes(item._id);

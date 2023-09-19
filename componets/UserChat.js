@@ -1,10 +1,44 @@
 import { Pressable, StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import React, { useContext,useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import { UserType } from '../UserContext';
 
 const UserChat = ({ item }) => {
     const navigation = useNavigation();
+    const[messages,setMessages]=useState([]);
+    const { userid } = useContext(UserType);
 
+    const fetchMessages = async () => {
+        try {
+            const response = await fetch(`http://192.168.1.3:8000/messages/${userid}/${item._id}`);
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMessages(data);
+            } else {
+                console.log("error Showing message", response.status.message);
+            }
+
+        } catch (err) {
+            console.log("error fetching messages", err);
+        }
+    }
+    useEffect(() => {
+        fetchMessages()
+    }, [])
+    // console.log(messages);
+    const getlastMessages = ()=>{
+        const userMessages =messages.filter((message) =>message.messageType ==="text");
+        const n = userMessages.length;
+        return userMessages[n-1];
+    }
+    const lastMessages = getlastMessages();
+    // console.log(lastMessages);
+    const formatTime = (time) => {
+        const options = { hour: 'numeric', minute: 'numeric' }
+        return new Date(time).toLocaleString('en-US', options);
+    }
     return (
         <Pressable onPress={() => navigation.navigate('Messages', {
             recepientId: item._id
@@ -15,10 +49,17 @@ const UserChat = ({ item }) => {
             />
             <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 15, fontWeight: '500' }}>{item.name}</Text>
-                <Text style={{ marginTop: 3, color: 'gray', fontWeight: '500' }}>last message come here</Text>
+                {
+                    lastMessages && (
+
+                <Text style={{ marginTop: 3, color: 'gray', fontWeight: '500' }}>{
+                    lastMessages?.message
+                }</Text>
+                    )
+                }
             </View>
             <View>
-                <Text style={{ fontWeight: '400', fontSize: 11, color: '#585858' }}>4:00pm</Text>
+                <Text style={{ fontWeight: '400', fontSize: 11, color: '#585858' }}>{lastMessages&&formatTime(lastMessages?.timeStamp)}</Text>
             </View>
         </Pressable>
     )
