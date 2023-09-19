@@ -270,3 +270,20 @@ app.get('/messages/:senderId/:recepientId', async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
+// endpoint to delete the message
+app.post('/deleteMessages', async (req, res) => {
+    try {
+        const { messageids } = req.body; // Change 'messages' to 'messageids'
+
+        if (!Array.isArray(messageids) || messageids.length === 0) {
+            return res.status(400).json({ message: "Messages not found" });
+        }
+
+        await Message.deleteMany({ _id: { $in: messageids } });
+        res.json({ message: "Messages deleted successfully" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});

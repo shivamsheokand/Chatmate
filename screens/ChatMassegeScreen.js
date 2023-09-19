@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView, TextInput, TouchableOpacity, Image, Pressable } from 'react-native'
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { Entypo } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import EmojiSelector from "react-native-emoji-selector";
@@ -12,6 +13,7 @@ const ChatMassegeScreen = () => {
     const [showEmojiSelector, setShowEmojiSelector] = useState(false);
     const [message, setMessage] = useState('');
     const [meggages, setMeggages] = useState([]);
+    const [selectedMessages, setSelectedMessages] = useState([]);
     const [selectedImage, setSelectedImage] = useState("");
     const { userid } = useContext(UserType);
     const navigation = useNavigation();
@@ -41,7 +43,7 @@ const ChatMassegeScreen = () => {
     useEffect(() => {
         fetchMessages()
     }, [])
-    console.log("Messages", meggages);
+    console.log("Messages", selectedMessages);
 
     // ...
 
@@ -51,15 +53,57 @@ const ChatMassegeScreen = () => {
             headerLeft: () => (
                 <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
                     <MaterialCommunityIcons onPress={() => navigation.goBack()} name="backburger" size={24} color="black" />
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Image style={{ width: 30, height: 30, resizeMode: 'cover', borderRadius: 15 }} source={{ uri: recepientData?.image }} />
-                        <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: "bold" }}>{recepientData?.name}</Text>
-                    </View>
+                    {selectedMessages.length > 0 ? (
+                        <View>
+                            <Text style={{ fontSize: 16, fontWeight: "500" }}>{selectedMessages.length}</Text>
+                        </View>
+                    ) : (
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image style={{ width: 30, height: 30, resizeMode: 'cover', borderRadius: 15 }} source={{ uri: recepientData?.image }} />
+                            <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: "bold" }}>{recepientData?.name}</Text>
+                        </View>
+                    )}
                 </View>
             ),
+            headerRight: () => selectedMessages.length > 0 ? (
+                <View style={{ alignItems: 'center', flexDirection: 'row', gap: 10 }}>
+                    <Ionicons name="arrow-redo" size={24} color="black" />
+                    <Octicons name="star" size={24} color="black" />
+                    <Ionicons name="arrow-undo" size={24} color="black" />
+                    <MaterialCommunityIcons onPress={() => deleteMessage(selectedMessages)} name="delete-sweep-outline" size={24} color="black" />
+                </View>
+            ) : null
         });
-    }, [recepientData]);
 
+    }, [recepientData, selectedMessages]);
+
+
+    //delete message
+    const deleteMessage = async (messageids) => {
+        try {
+            if (!Array.isArray(messageids) || messageids.length === 0) {
+                return; // Don't send the request if there are no messages to delete
+            }
+    
+            const response = await fetch('http://192.168.1.3:8000/deleteMessages', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ messageids }),
+            });
+    
+            if (response.ok) {
+                setSelectedMessages([]);
+                fetchMessages();
+            } else {
+                console.log("Error deleting messages", response.status);
+            }
+        } catch (err) {
+            console.log("Error deleting messages", err);
+        }
+    }
+    
     // ...
 
     useEffect(() => {
@@ -109,9 +153,7 @@ const ChatMassegeScreen = () => {
             console.log("error in sending message", err);
         }
     }
-    // console.log(recepientData);
-    // console.warn(recepientData);
-    // console.warn(fetchMessages());
+
     const formatTime = (time) => {
         const options = { hour: 'numeric', minute: 'numeric' }
         return new Date(time).toLocaleString('en-US', options);
@@ -129,22 +171,39 @@ const ChatMassegeScreen = () => {
         }
     }
 
+    const handleSelectMessage = (message) => {
+        try {
+            // check if the message is already selected
+            const isSelected = selectedMessages.includes(message._id);
+            if (isSelected) {
+                setSelectedMessages((previousMessage) => previousMessage.filter((id) => id !== message._id))
+            } else {
+                setSelectedMessages((previousMessage) => [...previousMessage, message._id]);
+            }
+        } catch (err) {
+            console.log("Internal error", err);
+        }
+    }
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
             <ScrollView>
                 {meggages.map((item, index) => {
 
                     if (item.messageType === "text") {
+                        const isSelected = selectedMessages.includes(item._id);
                         return (
-                            <Pressable key={index} style={[
-                                item?.senderId?._id === userid
-                                    ? { alignSelf: 'flex-end', backgroundColor: "#DCF8C6", padding: 8, maxWidth: "60%", borderRadius: 7, margin: 10 }
-                                    : {
-                                        alignSelf: 'flex-start', backgroundColor: "#fff", padding: 8, maxWidth: "60%", borderRadius: 7, margin: 10
-                                    }
-                            ]}
+                            <Pressable
+                                onLongPress={() => handleSelectMessage(item)}
+                                key={index} style={[
+                                    item?.senderId?._id === userid
+                                        ? { alignSelf: 'flex-end', backgroundColor: "#DCF8C6", padding: 8, maxWidth: "60%", borderRadius: 7, margin: 10 }
+                                        : {
+                                            alignSelf: 'flex-start', backgroundColor: "#fff", padding: 8, maxWidth: "60%", borderRadius: 7, margin: 10
+                                        },
+                                    isSelected && { width: "100%", backgroundColor: "#F0FFFF" }
+                                ]}
                             >
-                                <Text style={{ fontSize: 13, textAlign: 'left' }}>
+                                <Text style={{ fontSize: 13, textAlign: isSelected ? 'right' : 'left' }}>
                                     {item?.message}
                                 </Text>
                                 <Text style={{ textAlign: 'right', fontSize: 9, color: 'gray', marginTop: 3 }}>{formatTime(item.timeStamp)}</Text>
@@ -165,10 +224,10 @@ const ChatMassegeScreen = () => {
                                             alignSelf: 'flex-start', backgroundColor: "#fff", padding: 8, maxWidth: "60%", borderRadius: 7, margin: 10
                                         }
                                 ]}>
-                                    <View>
-                                        <Image source={source} style={{width:200,height:200,borderRadius:7}}/>
-                                        <Text style={{textAlign:'right',color:'gray',fontSize:9,position:'absolute',right:10,marginTop:3,bottom:7}}>{formatTime(item?.timeStamp)}</Text>
-                                    </View>
+                                <View>
+                                    <Image source={source} style={{ width: 200, height: 200, borderRadius: 7 }} />
+                                    <Text style={{ textAlign: 'right', color: 'white', fontSize: 9, position: 'absolute', right: 10, marginTop: 3, bottom: 7 }}>{formatTime(item?.timeStamp)}</Text>
+                                </View>
                             </Pressable>
                         )
                     }
