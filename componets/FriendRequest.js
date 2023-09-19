@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Pressable, TouchableOpacity, Image } from 'react-native'
 import React, { useContext } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import { UserType } from "../UserContext";
@@ -33,6 +33,10 @@ const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
 
     return (
         <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 }}>
+            <Image
+                style={{ width: 50, height: 50, borderRadius: 25 }}
+                source={{ uri: item.image }}
+            />
             <Text style={{ flex: 1, fontSize: 18, fontWeight: "bold" }}>{item?.name} : <Text style={{ fontSize: 17, fontWeight: '800' }}>Send you a friend request.. </Text></Text>
             <TouchableOpacity onPress={() => accptRequest(item._id)}>
                 <MaterialIcons name="add-task" size={30} color="purple" />

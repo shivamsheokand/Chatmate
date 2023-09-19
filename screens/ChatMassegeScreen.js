@@ -1,4 +1,4 @@
-import { StyleSheet, View,Text, ScrollView, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView, TextInput, TouchableOpacity, Image } from 'react-native'
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { Entypo } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -65,18 +65,19 @@ const ChatMassegeScreen = () => {
             console.log("error in sending message", err);
         }
     }
-        console.log(recepientData);
-        console.warn(recepientData);
+    console.log(recepientData);
+    console.warn(recepientData);
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: "",
             headerLeft: () => {
-                <View style={{flexDirection:'row',gap:10,alignItems:'center'}}>
-                    <Ionicons name="chevron-back" size={24} color="black" />
-                    <View><Text style={{fontSize:18,fontWeight:"bold",marginLeft:5}}>{recepientData?.name}</Text></View>
+                <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+                    <MaterialCommunityIcons name="backburger" size={24} color="black" />
                 </View>
             }
+            
         });
+        
     }, [])
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
