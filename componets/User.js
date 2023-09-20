@@ -13,7 +13,7 @@ const User = ({ item }) => {
         const fetchFriendRequests = async () => {
             try {
                 const response = await fetch(
-                    `http://192.168.1.3:8000/friend-request/sent/${userid}`
+                    `http://192.168.1.6:8000/friend-request/sent/${userid}`
                 );
 
                 const data = await response.json();
@@ -33,7 +33,7 @@ const User = ({ item }) => {
     useEffect(() => {
         const fetchUserFriends = async () => {
             try {
-                const response = await fetch(`http://192.168.1.3:8000/friends/${userid}`);
+                const response = await fetch(`http://192.168.1.6:8000/friends/${userid}`);
 
                 const data = await response.json();
 
@@ -53,7 +53,7 @@ const User = ({ item }) => {
     // console.warn("urer friend",userFriends);
     const sendfrendrequst = async (currentUserid, selectedUserid) => {
         try {
-            const response = await fetch('http://192.168.1.3:8000/friend-request',
+            const response = await fetch('http://192.168.1.6:8000/friend-request',
                 {
                     method: 'POST',
                     headers: {

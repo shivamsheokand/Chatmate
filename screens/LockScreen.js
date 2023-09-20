@@ -9,28 +9,28 @@ const LockScreen = () => {
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
 
-    // useEffect(() => {
-    //     const checkLoginStatus = async () => {
-    //         try {
-    //             const token = await AsyncStorage.getItem("authToken");
-    //             if (token) {
-    //                 navigation.replace("Home");
-    //             } else {
-    //                 // Token not found; show the login screen itself
-    //             }
-    //         } catch (err) {
-    //             console.log("Error", err);
-    //         }
-    //     };
-    //     checkLoginStatus();
-    // }, []);
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const token = await AsyncStorage.getItem("authToken");
+                if (token) {
+                    navigation.replace("Home");
+                } else {
+                    // Token not found; show the login screen itself
+                }
+            } catch (err) {
+                console.log("Error", err);
+            }
+        };
+        checkLoginStatus();
+    }, []);
 
     const handleLogin = () => {
         const user = {
             email: email,
             password: password
         };
-        axios.post('http://192.168.1.3:8000/login', user)
+        axios.post('http://192.168.1.6:8000/login', user)
             .then((response) => {
                 console.log(response);
                 const token = response.data.token;

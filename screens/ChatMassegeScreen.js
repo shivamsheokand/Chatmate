@@ -45,7 +45,7 @@ const ChatMassegeScreen = () => {
 
     const fetchMessages = async () => {
         try {
-            const response = await fetch(`http://192.168.1.3:8000/messages/${userid}/${recepientId}`)
+            const response = await fetch(`http://192.168.1.6:8000/messages/${userid}/${recepientId}`)
 
             const data = await response.json();
 
@@ -104,7 +104,7 @@ const ChatMassegeScreen = () => {
                 return; // Don't send the request if there are no messages to delete
             }
     
-            const response = await fetch('http://192.168.1.3:8000/deleteMessages', {
+            const response = await fetch('http://192.168.1.6:8000/deleteMessages', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -128,7 +128,7 @@ const ChatMassegeScreen = () => {
     useEffect(() => {
         const fetchRecepientData = async () => {
             try {
-                const response = await fetch(`http://192.168.1.3:8000/user/${recepientId}`);
+                const response = await fetch(`http://192.168.1.6:8000/user/${recepientId}`);
                 const data = await response.json(); // Wait for JSON parsing
                 setRecepientData(data);
             } catch (err) {
@@ -158,7 +158,7 @@ const ChatMassegeScreen = () => {
                 formData.append("messageText", message)
             }
 
-            const response = await fetch('http://192.168.1.3:8000/messages', {
+            const response = await fetch('http://192.168.1.6:8000/messages', {
                 method: "POST",
                 body: formData
             })

@@ -11,7 +11,7 @@ const ChatScreen = () => {
     useEffect(()=>{
         const acceptedFriendsList = async()=>{
             try{
-                const response=await fetch(`http://192.168.1.3:8000/friend-request/${userid}`)
+                const response=await fetch(`http://192.168.1.6:8000/accepted-friends/${userid}`)
                 const data=await response.json();
                 if(response.ok){
                     setAcceptedFriends(data);
@@ -22,7 +22,7 @@ const ChatScreen = () => {
         }
         acceptedFriendsList();
     },[]);
-    console.log("Friends",acceptedFriends);
+    // console.log("Friends",acceptedFriends);
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <Pressable>

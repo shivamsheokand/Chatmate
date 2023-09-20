@@ -14,7 +14,7 @@ const FriendsScreen = () => {
     const fetchFriendRequest = async () => {
         try {
             const response = await axios.get(
-                `http://192.168.1.3:8000/friend-request/${userid}`
+                `http://192.168.1.6:8000/friend-request/${userid}`
             );
             if (response.status === 200) {
                 const friendRequestsData = response.data.map((friendRequest) => ({
@@ -30,7 +30,7 @@ const FriendsScreen = () => {
         }
     };
 
-    console.log(friendRequest);
+    // console.log(friendRequest);
     return (
         <View style={{ padding: 10, marginHorizontal: 12 }}>
             {friendRequest.length > 0 && <Text style={{ fontSize: 20, color: '#070a14', padding: 3, fontWeight: "700" }}>Your Friend Requests!</Text>}

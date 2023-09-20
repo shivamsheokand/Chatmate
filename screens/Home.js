@@ -37,7 +37,7 @@ const Home = () => {
                 const userid = decodedToken.userid;
                 setUserid(userid);
 
-                const response = await axios.get(`http://192.168.1.3:8000/users/${userid}`);
+                const response = await axios.get(`http://192.168.1.6:8000/users/${userid}`);
                 setUsers(response.data);
             } catch (error) {
                 console.log('Error retrieving users', error);
